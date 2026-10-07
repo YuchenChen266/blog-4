@@ -1,0 +1,51 @@
+---
+title: "blog 4: Population and Per Capita Income Across U.S."
+author: "Yuchen Chen"
+date: "2026-10-06"
+output: html_document
+---
+This blog talks about whether the population of different states in U.S. has relationship with its per capita income. Population and income are two basic economic variables, understanding the relationship between them helps us observe the regional economic pattern of the U.S.. Many people think from intuition that a state with a larger scale would have more economic activities, and more job opportunities, therefore would have a higher per capita income. However, this hypothesis is not necessarily correct. This blog would use data visualization analysis to examine whether there is some correlation between population and per capita income or not. 
+
+This analysis used the dataset from online CSV document, including the information of the population and per capita income of all the states in the U.S.. Before the analysis, I finished the work of basic cleaning of the data. I transformed the original data into wide chart format, in order to draw pictures easier. I also deleted the data that represent the whole U.S. in order to avoid making mistakes. After cleaning the data, the dataset only contains the single observation samples of all different states, which ensure the reliability of the result of visualization. This research have three charts in total: a dot plot of state population, a scatter plot of population and per capita income, and a histogram of per capita income distribution.
+
+The first plot is a visible dot plot of all states' population. This chart clearly indicates that the distribution of population among different state in the U.S. is very unequal. Only few states have a large population, while most states have a relatively small scale of population. This highly right-skewed distribution of population shows the large differences in scale between different state of the U.S..
+
+The second chart is the core scatter plot of answering the research question. Each dot in the graph represents a state in the U.S., the x-axis represents the population, and the y-axis represents the per capita income. The chart can see that there is not significant linear trend between population and income. Some states with a large population keep a middle level of income, while many states with a small population have a higher level of income. This indicates that a larger population does not necessarily brings a higher income, we cannot explain the income differences between different states only by their population scale.
+
+The third plot is the histogram of the distribution of per capita income. It indicates the overall distribution of the per capita income of all states. Most states are in the middle range of income which is about $50,000, only few states have a significantly higher level of income. The distribution is slightly right-skewed, which means there exists some high-income states but it is not common.
+
+Overall, this analysis shows that there is no significant relationship between the population of the states in the U.S. and their per capita income. Although population scale can reflect the economic scale of a state, but it cannot directly decide people's income level. The structure of the industry, the education level, the extent of urbanization and the local economic policies abd other factors many have a more important role in the income level of these states.
+```{r}
+state_data <- read.csv("https://jhudatascience.org/intro_to_r/data/gdp_personal_income.csv")
+head(state_data)
+```
+```{r}
+library(tidyverse)
+state_newdata<-state_data%>%
+pivot_wider(names_from=Description,values_from=X2020)%>%
+  filter(GeoName!="United States")
+head(state_newdata)
+```
+```{r}
+ggplot(data=state_newdata,mapping=aes(x=GeoName,y=`Population (persons) 1/`))+
+  geom_point()+
+  theme(axis.text.x=element_text(angle=45,hjust=1,size=5))+
+  labs(x="state",y="population")
+```
+```{r}
+ggplot(data=state_newdata,mapping=aes(x=`Population (persons) 1/`,y=`Per capita personal income (dollars) 2/`))+
+  geom_point()+
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  labs(x="population",y="personal per capita income")
+```
+```{r}
+ggplot(data=state_newdata,mapping=aes(x=`Per capita personal income (dollars) 2/`))+
+  geom_histogram(bins=10)+
+  theme(axis.text.x=element_text(angle=45,hjust=1))+
+  labs(x="personal per capita income",y="number of states")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
